@@ -21,7 +21,6 @@ This is a tip
 
 [Home](/firstPage/)
 
-<<< @/test.js{4}
 
 ``` html
 <ul>

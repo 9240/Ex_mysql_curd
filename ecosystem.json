@@ -1,0 +1,28 @@
+{
+    "vuepress":[
+        {
+            "name":"vuepressDemo",
+            "script":"vuepress build docs",
+            "env":{
+                "COMMON_VARIABLE":"true"
+            },
+            "env_production":{
+                "NODE_ENV":"production"
+            }
+        }
+    ],
+    "deploy":{
+        "production":{
+            "user":"root",
+            "host":["47.99.138.216"],
+            "ref":"origin/master",
+            "repo":"git@github.com:9240/vuepressDemo.git",
+            "pre-deploy": "vuepress build docs",
+            "path":"/www/wwwroot/9240.fun",
+            "ssh_options":"StrictHostKeyChecking=no",
+            "env":{
+                "NODE_ENV":"production"
+            }
+        }
+    }
+}
