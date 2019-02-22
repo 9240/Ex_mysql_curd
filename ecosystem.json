@@ -17,7 +17,7 @@
             "host":["47.99.138.216"],
             "ref":"origin/master",
             "repo":"git@github.com:9240/vuepressDemo.git",
-            "post-deploy":"npm install",
+            "post-deploy":"npm install ; vuepress build docs",
             "path":"/www/wwwroot/9240.fun",
             "ssh_options":"StrictHostKeyChecking=no",
             "env":{
