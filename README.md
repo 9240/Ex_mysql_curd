@@ -1,5 +1,5 @@
-### 数据库配置文件：db/index.js
-### 创建test数据库，再创建两张表student和class
+1. ### 数据库配置文件：db/index.js
+2. ### 创建test数据库，再创建两张表student和class
 student：
 ```
 CREATE TABLE `student` (
@@ -19,6 +19,6 @@ CREATE TABLE `class` (
   PRIMARY KEY (`classid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
-### npm install
-### 启动express项目 npm run nodemon
-### 打开localhost:9240即可预览
+3. ### npm install
+4. ### 启动express项目 npm run nodemon
+5. ### 打开localhost:9240即可预览
