@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <% include ./bootstrap.ejs %>
+  </head>
+  <body>
+    <% include ./header.ejs %>
+    <div class="container mt-5 pt-3">
+      <div class="alert alert-primary" role="alert" id="Tip">
+        <!-- 提示内容 -->
+      </div>
+      <h2 class="text-center p-2">注册</h2>
+      <div class="jumbotron">
+        <div class="form-group row">
+          <label for="colFormLabel" class="col-sm-2 col-form-label text-right">邮箱:</label>
+          <div class="col-sm-10">
+            <input type="email" class="form-control" id="email" placeholder="请输入邮箱地址">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="colFormLabel" class="col-sm-2 col-form-label text-right">密码:</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="passwd" placeholder="请输入密码">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="colFormLabel" class="col-sm-2 col-form-label text-right">确认密码:</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="repasswd" placeholder="请输入重复密码">
+          </div>
+        </div>
+        <button class="btn btn-primary float-right" id="register">注册</button>
+      </div>
+    </div>
+  </body>
+</html>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.11.1/js/md5.min.js"></script>
+<script>
+  $(function(){
+    $('#Tip').hide()
+    $("#register").click(function(e){
+      if(($("#passwd").val() == $("#repasswd").val()) && $("#passwd").val()!= "" && $("#email").val() != ""){
+        $.ajax({
+          url:"/register",
+          type:"POST",
+          data:{
+            email:$("#email").val(),
+            passwd:md5($("#passwd").val())
+          },
+          success:function(res){
+            if(res.code == 200){
+              location.href = './login'
+            }else{
+              $('#Tip').show()
+              $("#Tip").addClass("alert-danger");
+              $("#Tip").text(res.msg)
+            }
+            $('#Tip').fadeOut(3000)
+          }
+        })
+      }else{
+        $('#Tip').show()
+        $("#Tip").addClass("alert-danger");
+        $("#Tip").text("请重新填写")
+      }
+    })
+  })
+</script>

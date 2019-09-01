@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <% include ./bootstrap.ejs %>
+  </head>
+  <body>
+    <div class="container">
+      <div class="bs-docs-section">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="page-header">
+              <div class="row">
+                <div class="col-lg-6">
+                  <h1 id="tables"><%= title %></h1>
+                </div>
+                <div class="col-lg-6">
+                  <button class="btn btn btn-success float-right" id="adduser">新增</button>
+                </div>
+              </div>
+            </div>
+            <div class="bs-component">
+              <table class="table table-hover text-center">
+                <thead>
+                  <tr>
+                    <th scope="col">序号</th>
+                    <th scope="col">uuid</th>
+                    <th scope="col">姓名</th>
+                    <th scope="col">年龄</th>
+                    <th scope="col">身高</th>
+                    <th scope="col">体重</th>
+                    <th scope="col">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% users.forEach((user,index)=>{ %>
+                    <tr class="">
+                      <th><%= index+1 %></th>
+                      <th scope="row"><%= user.id.substr(0,8) %>...</th>
+                      <td><%= user.username %></td>
+                      <td><%= user.age %></td>
+                      <td><%= user.height %></td>
+                      <td><%= user.weight %></td>
+                      <td>
+                        <button class="btn btn-primary" onclick="edituser('<%= user.id %>')">修改</button>
+                        <button class="btn btn-danger" onclick="deluser('<%= user.id %>')">删除</button>
+                      </td>
+                    </tr>
+                  <%})%>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!-- 新增和修改 -->
+<div class="modal" id="modal_add">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"></h5>
+        <input type="hidden" id="userid">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <input class="form-control" type="text" placeholder="姓名" id="username">
+        </div>
+        <div class="form-group">
+          <input class="form-control" type="text" placeholder="年龄" id="age">
+        </div>
+        <div class="form-group">
+          <input class="form-control" type="text" placeholder="身高" id="height">
+        </div>
+        <div class="form-group">
+          <input class="form-control" type="text" placeholder="体重" id="weight">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="submit" onclick="update()">提交</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var isUpdate;
+  $(function(){
+    $("#adduser").click(function(){
+      $('#username').val("")
+      $('#age').val("")
+      $('#height').val("")
+      $('#weight').val("")
+      $(".modal-title").text("新增用户")
+      $('#modal_add').modal('show')
+      isUpdate = false;
+    })
+  })
+  function edituser(userid){
+    $("#userid").val(userid)
+    isUpdate = true;
+    $(".modal-title").text("修改用户")
+    $('#modal_add').modal('show')
+    console.log(userid)
+    $.ajax({
+      url:'/query',
+      data:{userid:userid},
+      type:'GET',
+      success(res){
+        $('#username').val(res.msg[0].username)
+        $('#age').val(res.msg[0].age)
+        $('#height').val(res.msg[0].height)
+        $('#weight').val(res.msg[0].weight)
+      }
+    })
+  }
+  function update(){
+    if(isUpdate){
+      $.ajax({
+        url:'/update',
+        data:{userid:$('#userid').val(),username:$('#username').val(),age:$('#age').val(),height:$('#height').val(),weight:$('#weight').val()},
+        type:'POST',
+        success(res){
+          location.reload()
+        }
+      })
+    }else{
+      $.ajax({
+        url:'/adduser',
+        data:{username:$('#username').val(),age:$('#age').val(),height:$('#height').val(),weight:$('#weight').val()},
+        type:'POST',
+        success(res){
+          location.reload()
+        }
+      })
+    }
+  }
+  function deluser(userid){
+    $.ajax({
+      url:'/deluser',
+      data:{userid:userid},
+      type:'GET',
+      success(res){
+        location.reload()
+      }
+    })
+  }
+</script>

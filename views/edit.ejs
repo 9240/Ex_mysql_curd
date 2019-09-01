@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <% include ./bootstrap.ejs %>
+</head>
+<body>
+  <% include ./header.ejs %>
+
+  <div class="container mt-5 pt-3">
+		<div class="alert" role="alert" id="Tip">
+			<!-- 提示的内容 -->
+		</div>
+		<h2 class="text-center p-2">编辑</h2>
+		<div class="border rounded p-5">
+			<div class="form-group">
+				<label for="classTitle">想学的课程</label>
+				<input type="text" class="form-control" id="classTitle" placeholder="想学的课程" value="<%= classItem[0].classTitle%>">
+			</div>
+			<div class="form-group">
+				<label for="detail">详情</label>
+				<textarea class="form-control" id="detail" rows="3" placeholder="详情"><%= classItem[0].detail%></textarea>
+			</div>
+			<div class="row justify-content-end">
+				<div class="col-sm-2">
+					<button class="btn btn-info float-right" id="cancel">取消</button>
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-primary float-right" id="submit">确定</button>
+				</div>
+			</div>
+		</div>
+  </div>
+</body>
+</html>
+<script>
+	$(function(){
+		$('#Tip').hide()
+		$("#submit").click(function(){
+			if($("#classTitle").val() == "" ||$("#detail").val() == ""){
+				$("#Tip").addClass("alert-danger");
+				$("#Tip").text("请添加内容")
+				$('#Tip').show()
+				$('#Tip').fadeOut(3000)
+			}else{
+				$.ajax({
+					url:"/editClass?classid=<%= classItem[0].classid%>",
+					type:"POST",
+					data:{
+						classTitle:$("#classTitle").val(),
+						detail:$("#detail").val(),
+					},
+					success:function(res){
+						$('#Tip').show()
+						if(res.code == 200){
+							$("#classTitle").val('')
+							$("#detail").val('')
+							$("#Tip").addClass("alert-success");
+							location.href = './classList'
+						}else if(res.code == 400){
+							$("#Tip").addClass("alert-danger");
+							$("#Tip").text("修改失败")
+						}
+						$('#Tip').fadeOut(3000)
+					}
+				})
+			}
+		})
+		$("#cancel").click(function(){
+			window.history.go(-1);
+		})
+	})
+</script>

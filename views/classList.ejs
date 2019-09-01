@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= title %></title>
+	<% include ./bootstrap.ejs %>
+</head>
+	<body>
+		<% include ./header.ejs %>
+		<div class="container mt-5 pt-3">
+			<h2 class="text-center p-2">课程列表</h2>
+			<div class="form-group">
+				<input type="text" class="form-control" oninput="search(this)" placeholder="搜索">
+			</div>
+			<div class="jumbotron" id="contain">
+				<!-- 主体内容 -->
+			</div>
+		</div>
+	</body>
+</html>
+<script>
+	function delClass(classid){
+		$.ajax({
+			url:"/delClass?classid="+classid,
+			type:"GET",
+			success:function(res){
+				$('#Tip').show()
+				if(res.code == 200){
+					location.href = './classList'
+				}else if(res.code == 400){
+					$("#Tip").addClass("alert-danger");
+					$("#Tip").text("删除失败,请重试")
+					$('#Tip').fadeOut(3000)
+				}
+			}
+		})
+	}
+	function search(ele){
+		var val = ele&&ele.value||"";
+		$("#contain").text("");
+		$.ajax({
+			url:"/querySingle?classTitle="+val,
+			type:"GET",
+			success:function(res){
+				var str = "";
+				if(res.code == 200){
+					if(res.msg.length>0){
+						for(let i = 0;i<res.msg.length;i++){
+							str += `
+							<div class="card mt-3">
+								<div class="card-header">
+									No${i+1}.
+								</div>
+								<div class="card-body">
+									<h5 class="card-title">${res.msg[i].classTitle}</h5>
+									<p class="card-text">${res.msg[i].detail}.</p>
+									<a href="./edit?classid=${res.msg[i].classid}" class="btn btn-success">编辑</a>
+									<button class="btn btn-danger" onclick="delClass('${res.msg[i].classid}')">删除</button>
+								</div>
+							</div>
+							`
+						}
+					}else{
+						str = "<h2>你还没有添加课程</h2>"
+					}
+				}else if(res.code == 400){
+					str = `<h2>${res.msg}</h2>`;
+				}
+				$("#contain").append(str)
+			}
+		})
+	}
+	search();
+</script>
