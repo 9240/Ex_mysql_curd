@@ -1,4 +1,4 @@
-### 数据库配置配件：db/index.js
+### 数据库配置文件：db/index.js
 ### 创建test数据库，再创建两张表student和class
 student：
 ```
