@@ -16,6 +16,7 @@ CREATE TABLE `class` (
   `id` varchar(40) NOT NULL,
   `classTitle` varchar(40) NOT NULL,
   `detail` text NOT NULL,
+  foreign key(id) references student(id),
   PRIMARY KEY (`classid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
