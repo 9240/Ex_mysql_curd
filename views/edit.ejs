@@ -44,7 +44,7 @@
 				$('#Tip').fadeOut(3000)
 			}else{
 				$.ajax({
-					url:"/editClass?classid=<%= classItem[0].classid%>",
+					url:"/editClass?id=<%= classItem[0].id%>",
 					type:"POST",
 					data:{
 						classTitle:$("#classTitle").val(),

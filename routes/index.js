@@ -46,7 +46,7 @@ router.get('/about',(req,res,next)=>{
 
 // 编辑页
 router.get('/edit',(req,res,next)=>{
-  db.connection.query(`select * from class where classid = '${req.query.classid }'`, function (error, results, fields) {
+  db.connection.query(`select * from class where id = '${req.query.id }'`, function (error, results, fields) {
     if (error) throw error;
     res.render('edit',{title:"编辑",email:req.cookies.email,classItem:results})
   });
@@ -59,7 +59,7 @@ router.get('/register',(req,res,next)=>{
 
 // 查询单个接口
 router.get('/querySingle',(req,res,next)=>{
-  db.connection.query(`select * from class where id = '${req.cookies.uuid}' and classTitle like '%${req.query.classTitle}%'`, function (error, results, fields) {
+  db.connection.query(`select * from class where studentid = '${req.cookies.uuid}' and classTitle like '%${req.query.classTitle}%'`, function (error, results, fields) {
     if (error) throw error;
     if(results.length>0){
       resData.code = 200;
@@ -76,7 +76,7 @@ router.get('/querySingle',(req,res,next)=>{
 
 // 添加课程接口
 router.post('/addClass',(req,res,next)=>{
-  db.connection.query(`insert into class (classid,id,classTitle,detail) values ('${db.uuidv1()}','${req.cookies.uuid}','${req.body.classTitle}','${req.body.detail}')`, function (error, results, fields) {
+  db.connection.query(`insert into class (id,studentid,classTitle,detail) values ('${db.uuidv1()}','${req.cookies.uuid}','${req.body.classTitle}','${req.body.detail}')`, function (error, results, fields) {
     if (error) throw error;
     if(results.fieldCount == 0){
       resData.code = 200;
@@ -92,8 +92,9 @@ router.post('/addClass',(req,res,next)=>{
 
 // 编辑课程接口
 router.post('/editClass',(req,res,next)=>{
-  db.connection.query(`update class set classTitle='${req.body.classTitle}',detail = '${req.body.detail}' where classid='${req.query.classid}'`, function (error, results, fields) {
+  db.connection.query(`update class set classTitle='${req.body.classTitle}',detail = '${req.body.detail}' where id='${req.query.id}'`, function (error, results, fields) {
     if (error) throw error;
+    console.log(`${req.query.id}`)
     if(results.fieldCount == 0){
       resData.code = 200;
       resData.msg = "编辑成功"
@@ -108,7 +109,7 @@ router.post('/editClass',(req,res,next)=>{
 
 // 登录接口
 router.post('/login',(req,res,next)=>{
-  db.connection.query(`select * from user where email = '${req.body.email}' and passwd = '${req.body.passwd}'`, function (error, results, fields) {
+  db.connection.query(`select * from student where email = '${req.body.email}' and passwd = '${req.body.passwd}'`, function (error, results, fields) {
     if (error) throw error;
     if(results[0]&&results[0].id){
       res.cookie('uuid',results[0].id)
@@ -126,10 +127,10 @@ router.post('/login',(req,res,next)=>{
 
 // 注册接口
 router.post('/register',(req,res,next)=>{
-  db.connection.query(`select * from user where email = '${req.body.email}'`, function (error, results, fields) {
+  db.connection.query(`select * from student where email = '${req.body.email}'`, function (error, results, fields) {
     if (error) throw error;
     if(results.length == 0){
-      db.connection.query(`insert into user (id,email,passwd) values ('${db.uuidv1()}','${req.body.email}','${req.body.passwd}')`, function (error, results, fields) {
+      db.connection.query(`insert into student (id,email,passwd) values ('${db.uuidv1()}','${req.body.email}','${req.body.passwd}')`, function (error, results, fields) {
         if (error) throw error;
         if(results.fieldCount == 0){
           resData.code = 200;
@@ -151,7 +152,7 @@ router.post('/register',(req,res,next)=>{
 
 // 删除课程接口
 router.get('/delClass',(req,res,next)=>{
-  db.connection.query(`delete from class where classid='${req.query.classid}'`, function (error, results, fields) {
+  db.connection.query(`delete from class where id='${req.query.id}'`, function (error, results, fields) {
     if (error) throw error;
     if(results.fieldCount == 0){
       resData.code = 200;
@@ -217,7 +218,7 @@ router.get('/deluser',(req,res,next)=>{
 
 // 多表查询
 router.get('/queryAll',(req,res,next)=>{
-  db.connection.query(`select * from user`, function (error, results, fields) {
+  db.connection.query(`select * from student`, function (error, results, fields) {
     if (error) throw error;
     results.forEach((item,index) => {
       db.connection.query(`select * from class where id = '${item.id}'`, function (error, subResults, fields) {
